@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
 <link type="text/css" rel="stylesheet" href="css/style.css">
-<title>措滹企业人力资源管理系统--登录</title>
+<title>企业人力资源管理系统--登录</title>
 </head>
 
 <script language="JavaScript">
