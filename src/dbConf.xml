@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <typeAliases>
+        <typeAlias alias="Department" type="com.icss.person_manager.department.domain.Department"/>
+        <typeAlias alias="User" type="com.icss.person_manager.login.domain.User"/>
+        <typeAlias alias="Register" type="com.icss.person_manager.register.domain.User"/>
+       
+    </typeAliases>
+    
+    
+    <mappers>
+        
+        <mapper resource="com/icss/person_manager/department/dao/department.xml"/>
+        <mapper resource="com/icss/person_manager/login/dao/user.xml"/>
+        <mapper resource="com/icss/person_manager/register/dao/register.xml"/>
+        
+    </mappers>
+</configuration>

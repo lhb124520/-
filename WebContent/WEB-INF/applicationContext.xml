@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context ="http://www.springframework.org/schema/context" 
+    xmlns:aop="http://www.springframework.org/schema/aop" 
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-2.5.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd" 
+        default-init-method="initBean">
+        <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+         <bean id="ds" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://127.0.0.1:3306/PersonManager?characterEncoding=UTF-8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123"/>
+        <property name="initialSize" value="2"/>
+        <property name="maxActive" value="4"/>
+    </bean>      
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <constructor-arg ref="ds"/>
+    </bean>
+    
+    <bean id="ds1" class="org.springframework.jdbc.datasource.SingleConnectionDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://127.0.0.1:3306/PersonManager?characterEncoding=UTF-8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123"/>
+    </bean>    
+    
+    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="ds"/>
+        <property name="configLocation" value="classpath:dbConf.xml"/>
+    </bean>
+     <!-- 注册 -->
+     
+      <bean id="rAction" class="com.icss.person_manager.register.action.RegisterAction">
+        <constructor-arg ref="rService"/>
+    </bean>
+    <bean id="rService" class="com.icss.person_manager.register.service.impl.RegisterService">
+        <property name="dao" ref="rdao"/>
+    </bean>
+      <bean id="rdao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="com.icss.person_manager.register.dao.IRegisterDao"/>
+        <property name="sqlSessionFactory" ref="sessionFactory"/>
+    </bean>
+     <!-- 注册 -->
+     <!-- 登录 -->
+    <bean id="lAction" class="com.icss.person_manager.login.action.LoginAction">
+        <property name="service" ref="lservice"/> 
+    </bean>
+    <bean name="lservice" class="com.icss.person_manager.login.service.impl.LoginService">
+        <property name="dao" ref="ldao"/>
+    </bean>   
+    
+    <bean id="ldao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="com.icss.person_manager.login.dao.ILoginDao"/>
+        <property name="sqlSessionFactory" ref="sessionFactory"/>
+    </bean>  
+    <!-- 登录 -->
+    
+    <!-- 部门表 -->
+    <bean id="bAction" class="com.icss.person_manager.department.action.DepartmentAction">
+        <constructor-arg ref="bService"/>
+    </bean>
+    <bean id="bService" class="com.icss.person_manager.department.service.impl.DepartmentService">
+        <property name="dao" ref="bdao"/>
+    </bean>
+   <!-- 部门表 -->
+  
+    <!-- 分页 -->
+    <bean id="pAction" class="com.icss.person_manager.department.action.PagingAction">
+        <constructor-arg ref="pService"/>       
+    </bean>
+    
+    <bean id="pService" class="com.icss.person_manager.department.service.impl.PagingUtil">
+        <property name="dao" ref="bdao"/>
+    </bean>
+    
+        <!--分页 -->  
+    <bean id="bdao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="com.icss.person_manager.department.dao.IDepartmentDao"/>
+        <property name="sqlSessionFactory" ref="sessionFactory"/>
+    </bean>
+    
+    <bean id="dstransaction" class=" org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="ds"/>
+    </bean>
+    
+    <tx:advice id="adv" transaction-manager="dstransaction">
+        <tx:attributes>
+            <tx:method name="*" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+    <bean id="depart" class="com.icss.person_manager.department.advice.DepartAdvice"/>
+    
+    <aop:config>
+        <aop:pointcut expression="execution(* com.icss.person_manager.*.service.impl.*.updateDepartment(..))" id="txpc"/>
+        
+        <aop:advisor advice-ref="adv" pointcut-ref="txpc"/>
+       
+        <aop:aspect ref="depart">
+        <aop:around method="update" pointcut-ref="txpc"/>
+       
+        </aop:aspect>
+       
+        
+    </aop:config>
+     <aop:config>
+       
+         <aop:pointcut expression="execution(* com.icss.person_manager.*.service.impl.*.deleteDepartment(..))" id="txpc1"/>
+        
+        <aop:advisor advice-ref="adv" pointcut-ref="txpc1"/>
+        <aop:aspect ref="depart">
+        
+        <aop:around method="update" pointcut-ref="txpc1"/>
+        </aop:aspect>
+       
+        
+    </aop:config>
+    
+</beans>

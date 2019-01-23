@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>    
+    <constant name="struts.objectFactory" value="spring"></constant>
+    <package name="default" namespace="/" extends="struts-default">
+       
+         <action name="reg"  class="rAction" method="register">
+          <result name="success">/login.jsp</result>
+          </action>
+         
+         <action name="login" class="lAction" method="login">
+            <result name="failure">/login.jsp</result>
+            <result name="success">/mainPage.jsp</result>
+        </action>
+     
+         
+        <action name="qbook" class="bAction" method="queryBook">
+            <result name="success">/department_query.jsp</result>
+        </action><!-- /person_manager/qbook.action -->
+        <!-- com/icss/person_manager/department/action/DepartmentAction.java
+        com.icss.person_manager.department.action.DepartmentAction.doAddDepartment() -->
+        <action name="abook" class="bAction" method="doAddDepartment">
+            <result name="success">/department_query.jsp</result>
+        </action>
+        
+         <action name="gbook" class="bAction" method="doGetDepartment">
+            <result name="success">/update.jsp</result>
+        </action>
+        <action name="ubook" class="bAction" method="doUpdateDepartment">
+            <result name="success">/department_query.jsp</result>
+        </action>
+       <action name="dbook" class="bAction" method="doDeleteDepartment">
+            <result name="success">/department_query.jsp</result>
+        </action>
+        <action name="paging" class="pAction" method="paging">
+            <result name="success">/department_query.jsp</result>
+        </action>
+    </package>
+</struts>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icss.person_manager.department.dao.IDepartmentDao">
+
+    
+    <resultMap type="Department" id="bookmdb">
+       
+    </resultMap>
+    
+    <select id="query" parameterType="Department" resultMap="bookmdb">
+        select * from department where 1 =1 
+        <if test="dt_name != null and dt_name != ''">
+        and dt_name like '%${dt_name}%'
+        </if>
+        
+    </select>
+    <insert id="insert" parameterType="Department">
+        insert into department(dt_name, dt_createTime, dt_bz) values(#{dt_name}, #{dt_createTime}, #{dt_bz})
+    </insert>
+    
+    <select id="getOne" parameterType="int" resultMap="bookmdb">
+        select * from department where id = #{id}
+    </select>
+    
+     <update id="update" parameterType="Department">
+        update department
+        <set>
+        dt_name = #{dt_name},
+        dt_createTime = #{dt_createTime},
+        dt_bz = #{dt_bz},
+        
+        </set>
+        where id = #{id}
+    </update>
+    
+      <delete id="delete" parameterType="int">
+        delete from department where id = #{id}
+    </delete>
+    
+    <select id="SomePage" resultMap="bookmdb">
+   
+        select * from department limit #{currentPage},#{getPagesCount}  
+ 
+    </select>
+    
+   
+</mapper>
